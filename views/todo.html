@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Ma todolist</title>
+        <style>
+            a {text-decoration: none; color: black;}
+            li{cursor: pointer;}
+        </style>
+    </head>
+
+    <body>
+        <h1>Ma todolist</h1>
+
+        <ul id="todoliste">
+
+        </ul>
+
+
+        <form id="form">
+            <p>
+                <label for="newtodo">Que dois-je faire ?</label>
+                <input type="text" name="newtodo" id="newtodo" autofocus />
+                <input type="submit" value="valider" />
+            </p>
+        </form>
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+          var socket = io.connect('http://localhost:8080');
+
+          socket.on('liste', function(todos) {
+                $('#todoliste').empty();
+            for (var todo of todos){
+                $('#todoliste').append('<li id="'+ todo +'">✘'+ todo +'</li>');
+            }
+          });
+
+          $('form').submit(function(e) {
+            e.preventDefault();
+            var message = $('#newtodo').val();
+            // console.log('message côté client: ' + message);
+            socket.emit('message', message);
+            $('#newtodo').val('');
+          });
+
+          /* pour résoudre le problème d'action sur un élément généré dynamiquement
+             dans le DOM, il est nécessaire de cibler un élément déjà présent lors
+             du chargement du DOM (ici la liste ul ), puis de pointer l'event
+             click sur un élément enfant (li) en option de la méthode on.
+          */
+          $('#todoliste').on('click', 'li', function() {
+            let index = $('#todoliste li').index(this);
+          //  console.log('on retire : ' + index );
+            socket.emit('remove', index);
+          });
+
+        </script>
+    </body>
+</html>

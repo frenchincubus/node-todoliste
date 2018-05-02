@@ -1,0 +1,11 @@
+{
+    "name": "ma-todolist",
+    "version": "0.1.0",
+    "dependencies": {
+        "cookie-session": "~1.1.0",
+        "express": "~4.11.0",
+        "socket.io": "^2.0.4"
+    },
+    "author": "lio",
+    "description": "Un gestionnaire de todolist en temps réel"
+}
